@@ -64,7 +64,7 @@ def generate_boon(strength: Power) -> Boon:
 
     raw_boon = generate(
         "The following is a list of absurd and humorous boons.",
-        [{"Boon": b, "Strength": s.value} for (b, s) in EXAMPLE_BOONS],
+        [{"Strength": s.value, "Boon": b} for (b, s) in EXAMPLE_BOONS],
         ["Boon", "Strength"],
         {"Strength": strength.value},
     )
