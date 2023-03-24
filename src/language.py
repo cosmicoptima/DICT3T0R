@@ -80,15 +80,14 @@ def parse_response(generation: str, fields: list[str]) -> Optional[dict[str, str
 def generate(
     desc: str,
     examples: list[dict[str, str]],
-    fields: list[str],
+    output_fields: list[str],
     overrides: dict[str, str] = {},
 ):
     prompt = gen_few_shot_prompt(desc, examples, overrides)
-    debug_print(f"Prompt:\n\n{prompt}")
     generation = (
         co.generate(prompt, model=COH_MODEL, stop_sequences=["\n--\n"])
         .generations[0]
         .text
     )
     debug_print(f"Generation:\n\n{generation}")
-    return parse_response(generation, fields)
+    return parse_response(generation, output_fields)
