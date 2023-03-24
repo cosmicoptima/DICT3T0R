@@ -56,7 +56,7 @@ EXAMPLE_BOONS: list[tuple[str, Strength]] = [
         "You have a small understanding of mathematics, allowing you to follow simple conversations about statistics.",
         Strength.WEAK,
     ),
-    ("You gain an extra 1d8 bonus to your initiative rolls.", Strength.WEAK),
+    # ("You gain an extra 1d8 bonus to your initiative rolls.", Strength.WEAK),
     ("You gain the ability to fly.", Strength.STRONG),
     ("You may turn one person a day into a hamster. If you do so, you become unable to walk.", Strength.STRONG)
 ]
