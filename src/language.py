@@ -1,3 +1,5 @@
+from core import debug_print
+
 import cohere
 import json
 import openai
@@ -82,6 +84,7 @@ def generate(
     overrides: dict[str, str] = {},
 ):
     prompt = gen_few_shot_prompt(desc, examples, overrides)
+    debug_print(f"Prompt:\n\n{prompt}")
     generation = (
         co.generate(prompt, model=COH_MODEL, stop_sequences=["\n--\n"])
         .generations[0]

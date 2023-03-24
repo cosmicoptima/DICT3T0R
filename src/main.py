@@ -1,16 +1,14 @@
-from discord import Client, Intents, Interaction, Object, TextChannel, app_commands
+from core import client
 import language
 from quests import Power, generate_quest, generate_boon
-import random
 
-CELESTECORD = 1039267299863035964
+from discord import Interaction, Object, TextChannel, app_commands
+import random
 
 SPECIFIC_CHANNEL = 1039267300412493856
 
-intents = Intents.default()
-intents.members = True
-intents.message_content = True
-client = Client(intents=intents)
+CELESTECORD = 1039267299863035964
+
 tree = app_commands.CommandTree(client)
 
 
