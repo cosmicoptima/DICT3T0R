@@ -13,4 +13,4 @@ client = Client(intents=intents)
 def debug_print(text: str):
     channel = client.get_channel(DEBUG_CHANNEL)
     if isinstance(channel, TextChannel):
-        create_task(channel.send(text))
+        create_task(channel.send(f"```\n{text}\n```"))
