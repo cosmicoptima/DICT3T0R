@@ -1,13 +1,25 @@
-import random
-import logging
-from language import *
+from dataclasses import dataclass
+from language import generate
 from enum import Enum
 
 
+@dataclass
 class Quest:
-    def __init__(self, desc, exp):
-        self.desc = desc
-        self.exp = exp
+    desc: str
+    exp: int
+
+
+class Power(Enum):
+    WEAK = "weak"
+    MEDIUM = "medium"
+    STRONG = "strong"
+    GODLY = "godly"
+
+
+@dataclass
+class Boon:
+    desc: str
+    strength: Power
 
 
 EXAMPLE_QUESTS: list[tuple[str, int]] = [
@@ -20,69 +32,42 @@ EXAMPLE_QUESTS: list[tuple[str, int]] = [
 
 
 def generate_quest() -> Quest:
-    """Generate an idea for a quest."""
-    res = None
-    gen = (
-        co.generate(
-            model=COH_MODEL,
-            prompt=gen_prompt(
-                "The following is a list of absurd and humorous quests, along with a experience values."
-                + " More difficult quests reward more experience",
-                [{"Quest": q, "Experience": str(e)} for (q, e) in EXAMPLE_QUESTS],
-            ),
-            stop_sequences=["--"],
-        )
-        .generations[0]
-        .text
+    """Generate a quest."""
+
+    raw_quest = generate(
+        "The following is a list of absurd and humorous quests, along with a experience values.",
+        [{"Quest": q, "Experience": str(e)} for (q, e) in EXAMPLE_QUESTS],
+        ["Quest", "Experience"],
     )
-    print(gen)
-
-    res = parse_resp(gen, ["Quest", "Experience"])
-    if res:
-        return Quest(desc=res["Quest"], exp=res["Experience"])
-    raise Exception("No parse in generate_quest completion.")
+    if not raw_quest:
+        raise Exception("No parse in generate_quest completion.")
+    return Quest(raw_quest["Quest"], int(raw_quest["Experience"]))
 
 
-class Strength(Enum):
-    WEAK = "weak"
-    MEDIUM = "medium"
-    STRONG = "strong"
-    GODLY = "godly"
-
-
-EXAMPLE_BOONS: list[tuple[str, Strength]] = [
-    ("Your senses have expanded to full 360 degree visual awareness.", Strength.MEDIUM),
+EXAMPLE_BOONS: list[tuple[str, Power]] = [
+    ("Your senses have expanded to full 360 degree visual awareness.", Power.MEDIUM),
     (
         "You have a small understanding of mathematics, allowing you to follow simple conversations about statistics.",
-        Strength.WEAK,
+        Power.WEAK,
     ),
     # ("You gain an extra 1d8 bonus to your initiative rolls.", Strength.WEAK),
-    ("You gain the ability to fly.", Strength.STRONG),
-    ("You may turn one person a day into a hamster. If you do so, you become unable to walk.", Strength.STRONG)
+    ("You gain the ability to fly.", Power.STRONG),
+    (
+        "You may turn one person a day into a hamster. If you do so, you become unable to walk.",
+        Power.STRONG,
+    ),
 ]
 
 
-def generate_boon(strength: Strength) -> str:
-    res = None
-    gen = (
-        co.generate(
-            model=COH_MODEL,
-            prompt=gen_prompt(
-                "The following is a list of boons, of varying power levels.",
-                [
-                    {"Power": str(power), "Boon": boon}
-                    for (boon, power) in EXAMPLE_BOONS
-                ],
-                overrides={"Power": str(strength)},
-            ),
-            stop_sequences=["--"],
-        )
-        .generations[0]
-        .text
-    )
-    print(gen)
+def generate_boon(strength: Power) -> Boon:
+    """Generate a boon."""
 
-    res = parse_resp(gen, ["Boon"])
-    if res:
-        return res["Boon"]
-    raise Exception("No parse in generate_boon completion.")
+    raw_boon = generate(
+        "The following is a list of absurd and humorous boons.",
+        [{"Boon": b, "Strength": s.value} for (b, s) in EXAMPLE_BOONS],
+        ["Boon", "Strength"],
+        {"Strength": strength.value},
+    )
+    if not raw_boon:
+        raise Exception("No parse in generate_boon completion.")
+    return Boon(raw_boon["Boon"], Power(raw_boon["Strength"]))
