@@ -90,4 +90,5 @@ def generate(
         .generations[0]
         .text
     )
+    debug_print(f"Generation:\n\n{generation}")
     return parse_response(generation, fields)
