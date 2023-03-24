@@ -2,6 +2,7 @@ import cohere
 import openai
 import json
 import typing
+import random
 from typing import Optional
 
 OAI_MODEL = "gpt-3.5-turbo"
@@ -12,7 +13,17 @@ tokens = None
 with open(TOKEN_FILE) as f:
     tokens = json.load(f)
 
-co = cohere.Client(tokens["cohere"])
+class Rotate(cohere.Client):
+    def __init__(self, clients):
+        self.clients = clients
+
+    def random_client(self) -> cohere.Client:
+        return random.choice(self.clients)
+
+    def __getattribute__(self, name):
+       self.random_client().__getattribute__(name)
+
+co = Rotate([cohere.Client(token) for token in tokens["cohere"]])
 openai.api_key = tokens["openai"]
 
 

@@ -2,3 +2,4 @@
 venv/*
 tokens.json
 *__pycache__*
+db
