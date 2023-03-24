@@ -87,4 +87,7 @@ def generate(
         .generations[0]
         .text
     )
-    return parse_response(generation, output_fields)
+    output = parse_response(generation, output_fields)
+    if output is None:
+        return None
+    return {**output, **overrides}
