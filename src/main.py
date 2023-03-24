@@ -21,8 +21,8 @@ async def on_ready():
     await tree.sync(guild = Object(id=CELESTECORD))
 
 @tree.command(
-    name = "boon",
-    description = "Test command: make boon",
+    name = "restart",
+    description = "Restart to pull new changes.",
     guild = Object(id=CELESTECORD)
 )
 async def restart(interaction: Interaction):
