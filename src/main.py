@@ -1,9 +1,11 @@
-from discord import Client, Intents, Interaction, Object, app_commands
+from discord import Client, Intents, Interaction, Object, TextChannel, app_commands
 import language
 from quests import Power, generate_quest, generate_boon
 import random
 
 CELESTECORD = 1039267299863035964
+
+SPECIFIC_CHANNEL = 1039267300412493856
 
 intents = Intents.default()
 intents.members = True
@@ -15,6 +17,10 @@ tree = app_commands.CommandTree(client)
 @client.event
 async def on_ready():
     await tree.sync(guild=Object(id=CELESTECORD))
+
+    channel = client.get_channel(SPECIFIC_CHANNEL)
+    if isinstance(channel, TextChannel):
+        await channel.send("hi")
 
 
 @tree.command(
