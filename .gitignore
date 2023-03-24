@@ -1,2 +1,4 @@
 .vscode/*
 venv/*
+tokens.txt
+*__pycache__*
