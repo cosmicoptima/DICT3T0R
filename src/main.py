@@ -35,4 +35,19 @@ async def genqcmd(interaction: Interaction):
         raise e
 
 
+@tree.command(
+    name = "boon",
+    description = "Test command: make boon",
+    guild = Object(id=CELESTECORD)
+)
+async def genbcmd(interaction: Interaction):
+    await interaction.response.defer()
+    try:
+        boon = quests.generate_boon(quests.Strength.MEDIUM)
+        await interaction.followup.send(boon)
+    except Exception as e:
+        await interaction.followup.send(str(e))
+        raise e
+
+
 client.run(language.tokens["discord"])

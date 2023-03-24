@@ -20,14 +20,15 @@ class Rotate(cohere.Client):
     def random_client(self) -> cohere.Client:
         return random.choice(self.clients)
 
-    def __getattribute__(self, name):
+    def __getattr__(self, name):
        self.random_client().__getattribute__(name)
 
-co = Rotate([cohere.Client(token) for token in tokens["cohere"]])
+# co = Rotate([cohere.Client(token) for token in tokens["cohere"]])
+co = cohere.Client(tokens["cohere"][0])
 openai.api_key = tokens["openai"]
 
 
-def gen_prompt(desc: str, examples: list[dict[str, str]]) -> str:
+def gen_prompt(desc: str, examples: list[dict[str, str]], overrides: dict[str, str] = {}) -> str:
     """Make a formatted prompt from a description and examples."""
 
     def format_ex(ex: dict) -> str:
@@ -41,6 +42,7 @@ def gen_prompt(desc: str, examples: list[dict[str, str]]) -> str:
         + "\n\n"
         + "\n--\n".join(format_ex(ex) for ex in examples)
         + "\n--\n"
+        + format_ex(overrides)
         # + f"{list(examples[0].keys())[0]}:"
     )
 
