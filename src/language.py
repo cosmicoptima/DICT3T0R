@@ -19,7 +19,7 @@ openai.api_key = tokens["openai"]
 def cohere_token_is_valid(token: str) -> bool:
     client = cohere.Client(token)
     try:
-        client.tokenize("")
+        client.tokenize(" ")
         return True
     except cohere.CohereAPIError:
         return False
