@@ -24,8 +24,8 @@ class Rotate(cohere.Client):
         self.random_client().__getattribute__(name)
 
 
-# co = Rotate([cohere.Client(token) for token in tokens["cohere"]])
-co = cohere.Client(tokens["cohere"][0])
+co = Rotate([cohere.Client(token) for token in tokens["cohere"]])
+# co = cohere.Client(tokens["cohere"][0])
 openai.api_key = tokens["openai"]
 
 
