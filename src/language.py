@@ -1,4 +1,5 @@
 import cohere
+from core import debug_print
 import json
 import openai
 import random
@@ -17,11 +18,13 @@ openai.api_key = tokens["openai"]
 cohere_clients = []
 cohere_tokens = []
 for token in tokens["cohere"]:
-    try:
+    client = cohere.Client(token)
+    if client.check_api_key()["valid"]:
         cohere_clients.append(cohere.Client(token))
         cohere_tokens.append(token)
-    finally:
-        pass
+    else:
+        debug_print(f"Invalid token, removing: {token}")
+
 tokens["cohere"] = cohere_tokens
 
 with open(TOKEN_FILE, "w") as f:
@@ -33,14 +36,16 @@ def co() -> cohere.Client:
 
 
 def add_cohere_token(token: str) -> bool:
-    try:
-        cohere_clients.append(cohere.Client(token))
-    except:
-        return False
+    client = cohere.Client(token)
+    if client.check_api_key()["valid"]:
+        cohere_clients.append(client)
 
-    with open(TOKEN_FILE, "w") as f:
-        json.dump(tokens, f)
-    return True
+        with open(TOKEN_FILE, "w") as f:
+            json.dump(tokens, f)
+
+        return True
+
+    return False
 
 
 def gen_few_shot_prompt(
