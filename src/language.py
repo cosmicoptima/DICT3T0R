@@ -32,11 +32,15 @@ def co() -> cohere.Client:
     return random.choice(cohere_clients)
 
 
-def add_cohere_token(token: str):
-    cohere_clients.append(cohere.Client(token))
+def add_cohere_token(token: str) -> bool:
+    try:
+        cohere_clients.append(cohere.Client(token))
+    except:
+        return False
 
     with open(TOKEN_FILE, "w") as f:
         json.dump(tokens, f)
+    return True
 
 
 def gen_few_shot_prompt(

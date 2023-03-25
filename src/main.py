@@ -37,8 +37,11 @@ async def restart(interaction: Interaction):
     guild=Object(id=CELESTECORD),
 )
 async def sacrifice(interaction: Interaction, token: str):
-    add_cohere_token(token)
-    await interaction.response.send_message("Token added.", ephemeral=True)
+    if add_cohere_token(token):
+        response = "Your sacrifice has been accepted."
+    else:
+        response = "That token is invalid."
+    await interaction.response.send_message(response, ephemeral=True)
 
 
 @tree.command(
