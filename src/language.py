@@ -12,21 +12,12 @@ tokens = None
 with open(TOKEN_FILE) as f:
     tokens = json.load(f)
 
-
-class Rotate(cohere.Client):
-    def __init__(self, clients):
-        self.clients = clients
-
-    def random_client(self) -> cohere.Client:
-        return random.choice(self.clients)
-
-    def __getattr__(self, name):
-        self.random_client().__getattribute__(name)
-
-
-co = Rotate([cohere.Client(token) for token in tokens["cohere"]])
-# co = cohere.Client(tokens["cohere"][0])
 openai.api_key = tokens["openai"]
+cohere_clients = [cohere.Client(token) for token in tokens["cohere"]]
+
+
+def co() -> cohere.Client:
+    return random.choice(cohere_clients)
 
 
 def gen_few_shot_prompt(
@@ -83,7 +74,7 @@ def generate(
 ):
     prompt = gen_few_shot_prompt(desc, examples, overrides)
     generation = (
-        co.generate(
+        co().generate(
             prompt,
             model=COH_MODEL,
             stop_sequences=["\n--\n"],
