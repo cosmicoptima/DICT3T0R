@@ -38,7 +38,7 @@ async def restart(interaction: Interaction):
 )
 async def sacrifice(interaction: Interaction, token: str):
     add_cohere_token(token)
-    await interaction.response.send_message("Token added.")
+    await interaction.response.send_message("Token added.", ephemeral=True)
 
 
 @tree.command(
