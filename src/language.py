@@ -13,7 +13,19 @@ with open(TOKEN_FILE) as f:
     tokens = json.load(f)
 
 openai.api_key = tokens["openai"]
-cohere_clients = [cohere.Client(token) for token in tokens["cohere"]]
+
+cohere_clients = []
+cohere_tokens = []
+for token in tokens["cohere"]:
+    try:
+        cohere_clients.append(cohere.Client(token))
+        cohere_tokens.append(token)
+    finally:
+        pass
+tokens["cohere"] = cohere_tokens
+
+with open(TOKEN_FILE, "w") as f:
+    json.dump(tokens, f)
 
 
 def co() -> cohere.Client:
