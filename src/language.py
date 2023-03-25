@@ -20,6 +20,13 @@ def co() -> cohere.Client:
     return random.choice(cohere_clients)
 
 
+def add_cohere_token(token: str):
+    cohere_clients.append(cohere.Client(token))
+
+    with open(TOKEN_FILE, "w") as f:
+        json.dump(tokens, f)
+
+
 def gen_few_shot_prompt(
     desc: str, examples: list[dict[str, str]], overrides: dict[str, str] = {}
 ) -> str:

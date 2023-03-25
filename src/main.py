@@ -1,5 +1,5 @@
 from core import client
-import language
+from language import add_cohere_token, tokens
 from quests import Power, generate_quest, generate_boon
 
 from discord import Interaction, Object, TextChannel, app_commands
@@ -32,6 +32,16 @@ async def restart(interaction: Interaction):
 
 
 @tree.command(
+    name="sacrifice",
+    description="Sacrifice a Cohere token to the gods.",
+    guild=Object(id=CELESTECORD),
+)
+async def sacrifice(interaction: Interaction, token: str):
+    add_cohere_token(token)
+    await interaction.response.send_message("Token added.")
+
+
+@tree.command(
     name="quest", description="Test command: make quest", guild=Object(id=CELESTECORD)
 )
 async def gen_quest_test(interaction: Interaction):
@@ -59,4 +69,4 @@ async def gen_boon_test(interaction: Interaction):
         raise e
 
 
-client.run(language.tokens["discord"])
+client.run(tokens["discord"])
