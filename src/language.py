@@ -15,18 +15,27 @@ with open(TOKEN_FILE) as f:
 
 openai.api_key = tokens["openai"]
 
+
+def cohere_token_is_valid(token: str) -> bool:
+    client = cohere.Client(token)
+    try:
+        client.tokenize("")
+        return True
+    except cohere.CohereAPIError:
+        return False
+
+
 cohere_clients = []
 cohere_tokens = []
+
 for token in tokens["cohere"]:
-    client = cohere.Client(token)
-    if client.check_api_key()["valid"]:
+    if cohere_token_is_valid(token):
         cohere_clients.append(cohere.Client(token))
         cohere_tokens.append(token)
     else:
         debug_print(f"Invalid token, removing: {token}")
 
 tokens["cohere"] = cohere_tokens
-
 with open(TOKEN_FILE, "w") as f:
     json.dump(tokens, f)
 
@@ -36,13 +45,10 @@ def co() -> cohere.Client:
 
 
 def add_cohere_token(token: str) -> bool:
-    client = cohere.Client(token)
-    if client.check_api_key()["valid"]:
-        cohere_clients.append(client)
-
+    if cohere_token_is_valid(token):
+        cohere_clients.append(cohere.Client(token))
         with open(TOKEN_FILE, "w") as f:
             json.dump(tokens, f)
-
         return True
 
     return False
