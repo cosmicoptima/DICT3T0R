@@ -45,16 +45,37 @@ def generate_quest() -> Quest:
 
 
 EXAMPLE_BOONS: list[tuple[str, Power]] = [
-    ("Your senses have expanded to full 360 degree visual awareness.", Power.MEDIUM),
+    (
+        "Your senses have expanded to full 360 degree visual awareness.",
+        Power.MEDIUM,
+    ),
     (
         "You have a small understanding of mathematics, allowing you to follow simple conversations about statistics.",
         Power.WEAK,
     ),
-    # ("You gain an extra 1d8 bonus to your initiative rolls.", Strength.WEAK),
-    ("You gain the ability to fly.", Power.STRONG),
     (
-        "You may turn one person a day into a hamster. If you do so, you become unable to walk.",
+        "You may turn one person a day into a hamster. If you do so, you will become one as well.",
         Power.STRONG,
+    ),
+    (
+        "You may turn into a swarm of bees for 10 seconds at a time.",
+        Power.MEDIUM,
+    ),
+    (
+        "Random nearby objects send you telepathic messages.",
+        Power.MEDIUM,
+    ),
+    (
+        "You learn how to do an ollie! You will not improve beyond this; when you practice, you will fail miserably.",
+        Power.WEAK,
+    ),
+    (
+        "You may turn invisible, but only while singing a lullaby.",
+        Power.MEDIUM,
+    ),
+    (
+        "You gain the ability to eat bone marrow without feeling disgusted.",
+        Power.MEDIUM,
     ),
 ]
 

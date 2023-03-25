@@ -68,7 +68,7 @@ def parse_response(generation: str, fields: list[str]) -> Optional[dict[str, str
             used_fields.append(title)
             res[title] = body
 
-    # Only return responses that have every field.
+    # only return responses that have every field
     for field in fields:
         if not (field in used_fields):
             return None
@@ -83,7 +83,14 @@ def generate(
 ):
     prompt = gen_few_shot_prompt(desc, examples, overrides)
     generation = (
-        co.generate(prompt, model=COH_MODEL, stop_sequences=["\n--\n"])
+        co.generate(
+            prompt,
+            model=COH_MODEL,
+            stop_sequences=["\n--\n"],
+            max_tokens=256,
+            temperature=1,
+            p=0.9,
+        )
         .generations[0]
         .text
     )
