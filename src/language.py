@@ -125,8 +125,8 @@ def render_prompt_template(path: str) -> PromptTemplate:
     if data["type"] == "few-shot-object":
         return FewShotObjectPromptTemplate(
             data["description"],
-            data["input_keys"],
-            data["output_keys"],
+            data["input-keys"],
+            data["output-keys"],
             data["examples"],
         )
 
