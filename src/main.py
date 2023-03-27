@@ -1,13 +1,16 @@
-from core import client, debug_on_exception
+from core import client, debug_print
 from language import add_cohere_token, tokens
 from quests import Power, generate_quest, generate_boon
 
 from discord import Interaction, Object, TextChannel, app_commands
 import random
+from traceback import format_exc
 
-SPECIFIC_CHANNEL = 1039267300412493856
+# SPECIFIC_CHANNEL = 1039267300412493856
+SPECIFIC_CHANNEL = 980627242470244375
 
-CELESTECORD = 1039267299863035964
+# CELESTECORD = 1039267299863035964
+CELESTECORD = 980627242470244372
 
 tree = app_commands.CommandTree(client)
 
@@ -47,23 +50,26 @@ async def sacrifice(interaction: Interaction, token: str):
 @tree.command(
     name="quest", description="Test command: make quest", guild=Object(id=CELESTECORD)
 )
-@debug_on_exception
 async def gen_quest_test(interaction: Interaction):
     await interaction.response.defer()
 
-    quest = generate_quest()
-    await interaction.followup.send(f"({quest.xp} exp) {quest.description}")
+    try:
+        quest = generate_quest()
+        await interaction.followup.send(f"({quest.xp} exp) {quest.description}")
+    except:
+        debug_print(format_exc())
 
 
 @tree.command(
     name="boon", description="Test command: make boon", guild=Object(id=CELESTECORD)
 )
-@debug_on_exception
 async def gen_boon_test(interaction: Interaction):
     await interaction.response.defer()
-
-    boon = generate_boon(random.choice(list(Power)))
-    await interaction.followup.send(f"({boon.strength}) {boon.description}")
+    try:
+        boon = generate_boon(random.choice(list(Power)))
+        await interaction.followup.send(f"({boon.strength}) {boon.description}")
+    except:
+        debug_print(format_exc())
 
 
 client.run(tokens["discord"])
