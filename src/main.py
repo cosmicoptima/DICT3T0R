@@ -51,12 +51,8 @@ async def sacrifice(interaction: Interaction, token: str):
 async def gen_quest_test(interaction: Interaction):
     await interaction.response.defer()
 
-    try:
-        quest = generate_quest()
-        await interaction.followup.send(f"({quest.xp} exp) {quest.description}")
-    except Exception as e:
-        await interaction.followup.send(str(e))
-        raise e
+    quest = generate_quest()
+    await interaction.followup.send(f"({quest.xp} exp) {quest.description}")
 
 
 @debug_on_exception
@@ -66,12 +62,8 @@ async def gen_quest_test(interaction: Interaction):
 async def gen_boon_test(interaction: Interaction):
     await interaction.response.defer()
 
-    try:
-        boon = generate_boon(random.choice(list(Power)))
-        await interaction.followup.send(f"({boon.strength}) {boon.description}")
-    except Exception as e:
-        await interaction.followup.send(str(e))
-        raise e
+    boon = generate_boon(random.choice(list(Power)))
+    await interaction.followup.send(f"({boon.strength}) {boon.description}")
 
 
 client.run(tokens["discord"])
