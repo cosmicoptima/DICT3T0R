@@ -1,4 +1,4 @@
-from core import client
+from core import client, debug_on_exception
 from language import add_cohere_token, tokens
 from quests import Power, generate_quest, generate_boon
 
@@ -44,6 +44,7 @@ async def sacrifice(interaction: Interaction, token: str):
     await interaction.response.send_message(response, ephemeral=True)
 
 
+@debug_on_exception
 @tree.command(
     name="quest", description="Test command: make quest", guild=Object(id=CELESTECORD)
 )
@@ -58,6 +59,7 @@ async def gen_quest_test(interaction: Interaction):
         raise e
 
 
+@debug_on_exception
 @tree.command(
     name="boon", description="Test command: make boon", guild=Object(id=CELESTECORD)
 )
