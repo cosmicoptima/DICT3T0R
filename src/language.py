@@ -119,7 +119,7 @@ class FewShotObjectPromptTemplate(PromptTemplate):
 
 
 def render_prompt_template(path: str) -> PromptTemplate:
-    with open(f"../prompts/{path}.yml") as f:
+    with open(f"prompts/{path}.yml") as f:
         data = load(f, Loader=CLoader)
 
     if data["type"] == "few-shot-object":
