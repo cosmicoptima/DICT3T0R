@@ -1,0 +1,21 @@
+type: few-shot-object
+description: The following is a list of absurd and humorous quests, along with experience values.
+input-keys: []
+output-keys:
+  - Description
+  - XP
+examples:
+  - Description: Retrieve a heavy book from the top shelf.
+    XP: 2
+
+  - Description: Murder somebody and hide the body.
+    XP: 6
+
+  - Description: Turn everybody in the universe into paperclips.
+    XP: 40
+
+  - Description: Use the toilet without wiping.
+    XP: 3
+
+  - Description: Defeat the wizard in hand-to-hand battle.
+    XP: 8

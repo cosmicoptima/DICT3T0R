@@ -1,3 +1,4 @@
+cohere
 discord
 openai
-cohere
+pyyaml

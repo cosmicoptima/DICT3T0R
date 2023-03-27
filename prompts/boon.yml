@@ -1,0 +1,33 @@
+type: few-shot-object
+description: |
+  The following is a list of absurd and humorous boons.
+
+  The available strengths are weak, medium, strong and godly.
+input-keys:
+  - Strength
+output-keys:
+  - Description
+examples:
+  - Strength: medium
+    Description: Your senses have expanded to full 360 degree visual awareness.
+
+  - Strength: weak
+    Description: You have a small understanding of mathematics, allowing you to follow simple conversations about statistics.
+
+  - Strength: strong
+    Description: You may turn one person a day into a hamster. If you do so, you will become one as well.
+
+  - Strength: medium
+    Description: You may turn into a swarm of bees for 10 seconds at a time.
+
+  - Strength: medium
+    Description: Random nearby objects send you telepathic messages.
+
+  - Strength: weak
+    Description: You learn how to do an ollie! You will not improve beyond this; when you practice, you will fail miserably.
+
+  - Strength: medium
+    Description: You may turn invisible, but only while singing a lullaby.
+
+  - Strength: medium
+    Description: You gain the ability to eat bone marrow without feeling disgusted.

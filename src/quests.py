@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from language import generate
+from language import render_prompt_template
 from enum import Enum
 
 
 @dataclass
 class Quest:
-    desc: str
-    exp: int
+    description: str
+    xp: int
 
 
 class Power(Enum):
@@ -18,77 +18,27 @@ class Power(Enum):
 
 @dataclass
 class Boon:
-    desc: str
+    description: str
     strength: Power
 
 
-EXAMPLE_QUESTS: list[tuple[str, int]] = [
-    ("Retrieve a heavy book from the top shelf.", 2),
-    ("Murder somebody and hide the body.", 6),
-    ("Turn everybody in the universe into paperclips.", 40),
-    ("Use the toilet without wiping.", 3),
-    ("Defeat the wizard in hand-to-hand battle.", 8),
-]
+boon_template = render_prompt_template("boon")
+quest_template = render_prompt_template("quest")
 
 
 def generate_quest() -> Quest:
     """Generate a quest."""
 
-    raw_quest = generate(
-        "The following is a list of absurd and humorous quests, along with a experience values.",
-        [{"Quest": q, "Experience": str(e)} for (q, e) in EXAMPLE_QUESTS],
-        ["Quest", "Experience"],
-    )
-    if not raw_quest:
-        raise Exception("No parse in generate_quest completion.")
-    return Quest(raw_quest["Quest"], int(raw_quest["Experience"]))
-
-
-EXAMPLE_BOONS: list[tuple[str, Power]] = [
-    (
-        "Your senses have expanded to full 360 degree visual awareness.",
-        Power.MEDIUM,
-    ),
-    (
-        "You have a small understanding of mathematics, allowing you to follow simple conversations about statistics.",
-        Power.WEAK,
-    ),
-    (
-        "You may turn one person a day into a hamster. If you do so, you will become one as well.",
-        Power.STRONG,
-    ),
-    (
-        "You may turn into a swarm of bees for 10 seconds at a time.",
-        Power.MEDIUM,
-    ),
-    (
-        "Random nearby objects send you telepathic messages.",
-        Power.MEDIUM,
-    ),
-    (
-        "You learn how to do an ollie! You will not improve beyond this; when you practice, you will fail miserably.",
-        Power.WEAK,
-    ),
-    (
-        "You may turn invisible, but only while singing a lullaby.",
-        Power.MEDIUM,
-    ),
-    (
-        "You gain the ability to eat bone marrow without feeling disgusted.",
-        Power.MEDIUM,
-    ),
-]
+    quest_object = quest_template.generate({})
+    if quest_object is None:
+        raise Exception("No parse in generate_quest completion")
+    return Quest(quest_object["Description"], int(quest_object["XP"]))
 
 
 def generate_boon(strength: Power) -> Boon:
     """Generate a boon."""
 
-    raw_boon = generate(
-        "The following is a list of absurd and humorous boons.",
-        [{"Strength": s.value, "Boon": b} for (b, s) in EXAMPLE_BOONS],
-        ["Boon"],
-        {"Strength": strength.value},
-    )
-    if not raw_boon:
-        raise Exception("No parse in generate_boon completion.")
-    return Boon(raw_boon["Boon"], Power(raw_boon["Strength"]))
+    boon_object = boon_template.generate({"Strength": strength.value})
+    if not boon_object:
+        raise Exception("No parse in generate_boon completion")
+    return Boon(boon_object["Description"], Power(boon_object["Strength"]))

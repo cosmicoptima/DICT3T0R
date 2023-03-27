@@ -52,7 +52,7 @@ async def gen_quest_test(interaction: Interaction):
 
     try:
         quest = generate_quest()
-        await interaction.followup.send(f"({quest.exp} exp) {quest.desc}")
+        await interaction.followup.send(f"({quest.xp} exp) {quest.description}")
     except Exception as e:
         await interaction.followup.send(str(e))
         raise e
@@ -66,7 +66,7 @@ async def gen_boon_test(interaction: Interaction):
 
     try:
         boon = generate_boon(random.choice(list(Power)))
-        await interaction.followup.send(f"({boon.strength}) {boon.desc}")
+        await interaction.followup.send(f"({boon.strength}) {boon.description}")
     except Exception as e:
         await interaction.followup.send(str(e))
         raise e

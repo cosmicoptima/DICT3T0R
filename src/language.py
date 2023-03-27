@@ -1,9 +1,13 @@
-import cohere
 from core import debug_print
+
+from abc import ABC, abstractmethod
+import cohere
+from dataclasses import dataclass
 import json
 import openai
 import random
-from typing import Optional
+from typing import Any, List, Optional
+from yaml import CLoader, load
 
 OAI_MODEL = "gpt-3.5-turbo"
 COH_MODEL = "xlarge"
@@ -54,72 +58,76 @@ def add_cohere_token(token: str) -> bool:
     return False
 
 
-def gen_few_shot_prompt(
-    desc: str, examples: list[dict[str, str]], overrides: dict[str, str] = {}
-) -> str:
-    """Make a formatted few-shot prompt from a description and examples.
-
-    `overrides` contains fields to override in the output."""
-
-    def format_example(ex: dict) -> str:
-        res = ""
-        for name, val in ex.items():
-            res += f"{name}: {val}\n"
-        return res.strip("\n")
-
-    return (
-        desc
-        + "\n\n"
-        + "\n--\n".join(format_example(ex) for ex in examples)
-        + "\n--\n"
-        + format_example(overrides)
-        # + f"{list(examples[0].keys())[0]}:"
-    )
+class PromptTemplate(ABC):
+    @abstractmethod
+    def generate(self, _: Any) -> Any:
+        pass
 
 
-def parse_response(generation: str, fields: list[str]) -> Optional[dict[str, str]]:
-    """Format the result of a prompt from gen_few_shot_prompt."""
+@dataclass
+class FewShotObjectPromptTemplate(PromptTemplate):
+    description: str
+    input_keys: List[str]
+    output_keys: List[str]
+    examples: List[dict[str, str]]
 
-    used_fields = []
-    res = {}
+    def _generate_prompt(self, input_dict: dict[str, str]) -> str:
+        def format_item(item: dict) -> str:
+            input_keys = [k for k in item.keys() if k in self.input_keys]
+            output_keys = [k for k in item.keys() if k in self.output_keys]
+            keys = input_keys + output_keys
+            return "\n".join([f"{k}: {item[k]}" for k in keys])
 
-    lines = generation.split("\n")
-    for line in lines:
-        split = line.split(": ")
-        if len(split) != 2:
-            continue
-        title, body = split
-        if title in fields:
-            used_fields.append(title)
-            res[title] = body
-
-    # only return responses that have every field
-    for field in fields:
-        if not (field in used_fields):
-            return None
-    return res
-
-
-def generate(
-    desc: str,
-    examples: list[dict[str, str]],
-    output_fields: list[str],
-    overrides: dict[str, str] = {},
-):
-    prompt = gen_few_shot_prompt(desc, examples, overrides)
-    generation = (
-        co().generate(
-            prompt,
-            model=COH_MODEL,
-            stop_sequences=["\n--\n"],
-            max_tokens=256,
-            temperature=1,
-            p=0.9,
+        items = self.examples + [input_dict]
+        return (
+            self.description
+            + "\n\n"
+            + "\n--\n".join(format_item(item) for item in items)
         )
-        .generations[0]
-        .text
-    )
-    output = parse_response(generation, output_fields)
-    if output is None:
+
+    def _parse_response(self, response: str) -> Optional[dict[str, str]]:
+        output = {}
+
+        lines = response.split("\n")
+        for line in lines:
+            try:
+                key, value = line.split(": ")
+            except ValueError:
+                continue
+            
+            output[key] = value
+
+        if set(output.keys()) == set(self.output_keys):
+            return output
         return None
-    return {**output, **overrides}
+    
+    def generate(self, input_dict: dict[str, str]) -> Optional[dict[str, str]]:
+        prompt = self._generate_prompt(input_dict)
+        response = (
+            co().generate(
+                prompt,
+                model=COH_MODEL,
+                stop_sequences=["\n--\n"],
+                max_tokens=256,
+                temperature=1,
+                p=0.9,
+            )
+            .generations[0]
+            .text
+        )
+        return self._parse_response(response)
+
+
+def render_prompt_template(path: str) -> PromptTemplate:
+    with open(f"../prompts/{path}.yml") as f:
+        data = load(f, Loader=CLoader)
+
+    if data["type"] == "few-shot-object":
+        return FewShotObjectPromptTemplate(
+            data["description"],
+            data["input_keys"],
+            data["output_keys"],
+            data["examples"],
+        )
+
+    raise ValueError(f"Invalid prompt template type: {data['type']}")
