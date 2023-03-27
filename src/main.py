@@ -6,11 +6,9 @@ from discord import Interaction, Object, TextChannel, app_commands
 import random
 from traceback import format_exc
 
-# SPECIFIC_CHANNEL = 1039267300412493856
-SPECIFIC_CHANNEL = 980627242470244375
+SPECIFIC_CHANNEL = 1039267300412493856
 
-# CELESTECORD = 1039267299863035964
-CELESTECORD = 980627242470244372
+CELESTECORD = 1039267299863035964
 
 tree = app_commands.CommandTree(client)
 
