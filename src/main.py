@@ -44,10 +44,10 @@ async def sacrifice(interaction: Interaction, token: str):
     await interaction.response.send_message(response, ephemeral=True)
 
 
-@debug_on_exception
 @tree.command(
     name="quest", description="Test command: make quest", guild=Object(id=CELESTECORD)
 )
+@debug_on_exception
 async def gen_quest_test(interaction: Interaction):
     await interaction.response.defer()
 
@@ -55,10 +55,10 @@ async def gen_quest_test(interaction: Interaction):
     await interaction.followup.send(f"({quest.xp} exp) {quest.description}")
 
 
-@debug_on_exception
 @tree.command(
     name="boon", description="Test command: make boon", guild=Object(id=CELESTECORD)
 )
+@debug_on_exception
 async def gen_boon_test(interaction: Interaction):
     await interaction.response.defer()
 
